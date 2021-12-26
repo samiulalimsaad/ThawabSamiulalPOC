@@ -1,13 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 /* This example requires Tailwind CSS v2.0+ */
-import { useUser } from "@auth0/nextjs-auth0";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { memo } from "react";
+import React from "react";
+import Loading from "../Loading";
 
 const Navbar = () => {
-    const { user } = useUser();
+    const { user, isAuthenticated, isLoading, logout, loginWithPopup } =
+        useAuth0();
+    if (isLoading) {
+        return <Loading />;
+    }
     return (
         <Disclosure as="nav" className="bg-gray-800">
             <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 ">
@@ -37,15 +42,27 @@ const Navbar = () => {
                             </div>
                             <div>{user?.name}</div>
                         </div>
-                        <Link href="api/auth/logout" passHref>
-                            <a className="border-2 border-red-900 px-4 text-lg rounded-md hover:bg-red-900 hover:text-white mx-2">
+                        {isAuthenticated ? (
+                            <button
+                                className="border-2 border-red-900 px-4 text-lg rounded-md hover:bg-red-900 hover:text-white mx-2"
+                                onClick={() =>
+                                    logout({ returnTo: window.location.origin })
+                                }
+                            >
                                 Logout
-                            </a>
-                        </Link>
+                            </button>
+                        ) : (
+                            <button
+                                className="border-2 border-red-900 px-4 text-lg rounded-md hover:bg-red-900 hover:text-white mx-2"
+                                onClick={() => loginWithPopup()}
+                            >
+                                Login
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
         </Disclosure>
     );
 };
-export default memo(Navbar);
+export default Navbar;

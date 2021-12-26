@@ -1,35 +1,42 @@
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
 import { getArticle } from "../../query/article";
 
 const Article = () => {
-    const [state, setState] = useState<any>([]);
     const router = useRouter() as any;
-    useEffect(() => {
-        (async function () {
-            router?.query?.id &&
-                setState((await getArticle(router?.query?.id)) as any);
-        })();
-    }, [router?.query?.id]);
-
-    if (state.length === 0) {
-        return <Loading />;
+    const { data, loading, error } = useQuery(getArticle, {
+        variables: {
+            id: router?.query?.id,
+        },
+    });
+    if (error) {
+        return (
+            <div>
+                <pre>{JSON.stringify(error, null, 4)}</pre>
+            </div>
+        );
     }
-
+    if (loading) {
+        return (
+            <div className="h-full w-screen">
+                <Loading />
+            </div>
+        );
+    }
     return (
         <Layout>
             <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-10 flex">
                 <div className="w-3/5">
                     <div className="w-full h-full bg-white space-y-4 px-4">
                         <h2 className="text-2xl font-semibold pt-4">
-                            {state?.article?.length && state?.article[0]?.title}
+                            {data?.article?.length && data?.article[0]?.title}
                         </h2>
                         <div className="mt-4">
                             <p className="text-gray-600">
-                                {state?.article?.length &&
-                                    state?.article[0]?.content}
+                                {data?.article?.length &&
+                                    data?.article[0]?.content}
                             </p>
                         </div>
                     </div>

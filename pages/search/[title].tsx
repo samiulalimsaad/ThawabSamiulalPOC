@@ -1,24 +1,30 @@
+import { useQuery } from "@apollo/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
 import { getSearchedArticle } from "../../query/article";
 
 const SearchWithTitle = () => {
-    const [state, setState] = useState<any>([]);
     const router = useRouter() as any;
-    useEffect(() => {
-        (async function () {
-            router?.query?.title &&
-                setState(
-                    (await getSearchedArticle(router?.query?.title)) as any
-                );
-        })();
-    }, [router?.query?.title]);
-
-    if (state.length === 0) {
-        return <Loading />;
+    const { data, loading, error } = useQuery(getSearchedArticle, {
+        variables: {
+            title: router?.query?.title,
+        },
+    });
+    if (error) {
+        return (
+            <div>
+                <pre>{JSON.stringify(error, null, 4)}</pre>
+            </div>
+        );
+    }
+    if (loading) {
+        return (
+            <div className="h-full w-screen">
+                <Loading />
+            </div>
+        );
     }
     return (
         <Layout>
@@ -33,8 +39,8 @@ const SearchWithTitle = () => {
             <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-10 flex ">
                 <div className="w-3/5">
                     <div className="flex flex-wrap justify-center space-y-4">
-                        {state?.article?.length ? (
-                            state?.article?.map((v: any) => (
+                        {data?.article?.length ? (
+                            data?.article?.map((v: any) => (
                                 <div
                                     key={v.id}
                                     className="bg-white p-4 rounded-md h-40 w-full overflow-hidden"
