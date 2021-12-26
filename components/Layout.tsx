@@ -9,8 +9,8 @@ const Layout = ({ children }: { children: any }) => {
             <header>
                 <Navbar />
             </header>
-            <section className="w-screen h-screen overflow-auto bg-gray-100">
-                <div>{children}</div>
+            <section className="w-screen h-screen overflow-auto bg-gray-100 pb-24">
+                {children}
             </section>
         </>
     );

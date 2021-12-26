@@ -1,16 +1,9 @@
 import { ArrowSmRightIcon, DocumentIcon } from "@heroicons/react/outline";
 import Link from "next/link";
-import {
-    JSXElementConstructor,
-    Key,
-    ReactElement,
-    ReactNodeArray,
-    ReactPortal,
-    useEffect,
-    useState,
-} from "react";
+import { Key, useEffect, useState } from "react";
 import { getSubcategory } from "../../query/subcategory";
 import { categoryInterface } from "../../util/interfaces";
+import Loading from "../Loading";
 
 const Category = ({ category }: categoryInterface) => {
     const [subCategories, setSubCategories] = useState([]);
@@ -29,7 +22,7 @@ const Category = ({ category }: categoryInterface) => {
                     {category?.map((v: any) => (
                         <button
                             key={v.id}
-                            className="bg-white mb-4 text-pink-900 px-4 border-2 border-pink-900 text-lg rounded-md hover:bg-pink-900 hover:text-white mx-2"
+                            className="bg-white mb-4 text-red-900 px-4 border-2 border-red-900 text-lg rounded-md hover:bg-red-900 hover:text-white mx-2"
                             onClick={() => {
                                 loadSubcategory(v.id);
                             }}
@@ -38,17 +31,15 @@ const Category = ({ category }: categoryInterface) => {
                         </button>
                     ))}
                 </div>
-                {/* {subCategories?.length}
-                <pre>{JSON.stringify(subCategories, null, 4)}</pre> */}
                 <div className="flex flex-wrap justify-between">
-                    {subCategories?.length &&
+                    {subCategories?.length > 0 ? (
                         subCategories?.map((v: any) => (
                             <div
                                 key={v.id}
                                 className="bg-white p-4 rounded-md h-auto w-80 m-2"
                             >
                                 <div className="flex justify-between">
-                                    <div className="bg-pink-900 rounded-full text-white p-2 px-4">
+                                    <div className="bg-red-900 rounded-full text-white p-2 px-4">
                                         {v.articles?.length}
                                     </div>
                                     <div>{v.subcategory_name}</div>
@@ -57,23 +48,12 @@ const Category = ({ category }: categoryInterface) => {
                                     {v.articles.map(
                                         (ar: {
                                             id: Key | null | undefined;
-                                            title:
-                                                | string
-                                                | number
-                                                | boolean
-                                                | {}
-                                                | ReactElement<
-                                                      any,
-                                                      | string
-                                                      | JSXElementConstructor<any>
-                                                  >
-                                                | ReactNodeArray
-                                                | ReactPortal
-                                                | null
-                                                | undefined;
+                                            title: string;
                                         }) => (
                                             <div key={ar.id}>
-                                                <Link href="/article/id">
+                                                <Link
+                                                    href={`/article/${ar.id}`}
+                                                >
                                                     <a className="flex">
                                                         <DocumentIcon className="h-6 w-6 mr-2" />
                                                         {ar.title}
@@ -88,14 +68,19 @@ const Category = ({ category }: categoryInterface) => {
                                         href={`/sub-category/${v.id}`}
                                         passHref
                                     >
-                                        <a className="bg-white mb-4 text-pink-900 border-2 border-pink-900 text-lg rounded-md flex justify-center items-center hover:bg-pink-900 hover:text-white">
+                                        <a className="bg-white mb-4 text-red-900 border-2 border-red-900 text-lg rounded-md flex justify-center items-center hover:bg-red-900 hover:text-white">
                                             More
                                             <ArrowSmRightIcon className="h-6 w-6 ml-2" />
                                         </a>
                                     </Link>
                                 </div>
                             </div>
-                        ))}
+                        ))
+                    ) : (
+                        <div className="h-96 w-full">
+                            <Loading />
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="w-2/5 h-[90vh] p-4">

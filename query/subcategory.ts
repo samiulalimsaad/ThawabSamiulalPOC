@@ -8,6 +8,7 @@ export const getSubcategory = async (id: string) => {
                 id
                 articles {
                     title
+                    id
                 }
             }
         }

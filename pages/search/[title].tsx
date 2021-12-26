@@ -3,38 +3,33 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
-import { getAllArticlesFromSubcategory } from "../../query/article";
+import { getSearchedArticle } from "../../query/article";
 
-const SubCategory = () => {
+const SearchWithTitle = () => {
     const [state, setState] = useState<any>([]);
     const router = useRouter() as any;
     useEffect(() => {
         (async function () {
-            router?.query?.id &&
+            router?.query?.title &&
                 setState(
-                    (await getAllArticlesFromSubcategory(
-                        router?.query?.id
-                    )) as any
+                    (await getSearchedArticle(router?.query?.title)) as any
                 );
         })();
-    }, [router?.query?.id]);
+    }, [router?.query?.title]);
 
     if (state.length === 0) {
         return <Loading />;
     }
-
     return (
         <Layout>
-            <h2 className="text-4xl font-semibold capitalize block text-center mt-5">
-                {state?.subcategory?.length > 0 &&
-                    state?.subcategory[0]?.subcategory_name}
+            <h2 className="text-4xl font-semibold capitalize block text-center py-5">
+                Searched result for {router?.query?.title}
             </h2>
             <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-10 flex ">
                 <div className="w-3/5">
                     <div className="flex flex-wrap justify-center space-y-4">
-                        {state?.subcategory?.length > 0 &&
-                        state?.subcategory[0]?.articles?.length > 0 ? (
-                            state?.subcategory[0]?.articles?.map((v: any) => (
+                        {state?.article?.length ? (
+                            state?.article?.map((v: any) => (
                                 <div
                                     key={v.id}
                                     className="bg-white p-4 rounded-md h-40 w-full overflow-hidden"
@@ -64,4 +59,4 @@ const SubCategory = () => {
     );
 };
 
-export default SubCategory;
+export default SearchWithTitle;

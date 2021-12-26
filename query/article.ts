@@ -24,6 +24,32 @@ export const getArticle = async (id: string) => {
     );
     return article;
 };
+
+export const getSearchedArticle = async (title: string) => {
+    const query = gql`
+        query MyQuery($title: String!) {
+            article(where: { title: { _regex: $title } }) {
+                title
+                id
+                content
+            }
+        }
+    `;
+
+    const article = await request(
+        "https://saad-poc.hasura.app/v1/graphql",
+        query,
+        { title },
+        {
+            "content-type": "application/json",
+            "Hasura-Client-Name": "hasura-console",
+            "x-hasura-admin-secret":
+                "03yfeDPfK64N1Jxh5VDdEvSPVyw65LK5cAUv6pSu0p7jmK7BAipsN5Nl9vq28BZh",
+        }
+    );
+    return article;
+};
+
 export const getAllArticlesFromSubcategory = async (id: string) => {
     const query = gql`
         query MyQuery($id: uuid!) {
