@@ -23,7 +23,12 @@ const SearchWithTitle = () => {
     return (
         <Layout>
             <h2 className="text-4xl font-semibold capitalize block text-center py-5">
-                Searched result for {router?.query?.title}
+                Searched result for{" "}
+                <span className="text-blue-800">
+                    &quot;
+                    {router?.query?.title}
+                    &quot;
+                </span>
             </h2>
             <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-10 flex ">
                 <div className="w-3/5">

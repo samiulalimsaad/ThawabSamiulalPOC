@@ -12,7 +12,7 @@ const Main = () => {
                     Lorem ipsum, dolor sit amet consectetur adipisicing.
                 </h3>
                 <div>
-                    <form className="space-x-4 flex">
+                    <div className="space-x-4 flex">
                         <input
                             type="text"
                             placeholder="search for articles"
@@ -26,7 +26,7 @@ const Main = () => {
                                 Search
                             </a>
                         </Link>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

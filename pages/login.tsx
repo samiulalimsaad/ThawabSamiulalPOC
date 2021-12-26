@@ -1,11 +1,18 @@
-import Login from "../components/login";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import Loading from "../components/Loading";
 
-function login() {
+function Login() {
+    const router = useRouter();
+    useEffect(() => {
+        router.push("/api/auth/login");
+    }, [router]);
+
     return (
-        <section>
-            <Login />
+        <section className="h-screen w-screen">
+            <Loading />
         </section>
     );
 }
 
-export default login;
+export default Login;
