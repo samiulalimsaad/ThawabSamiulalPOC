@@ -15,7 +15,6 @@ const Category = ({ category }: categoryInterface) => {
     const loadSubcategory = async (id: string) => {
         setSubCategoryId(id);
     };
-    console.log("subCategoryId = ", subCategoryId);
     if (error) {
         return (
             <div>
@@ -50,7 +49,7 @@ const Category = ({ category }: categoryInterface) => {
                     {subCategoryId && <SubCategory id={subCategoryId!} />}
                 </div>
             </div>
-            <div className="w-2/5 h-[90vh] p-4">
+            <div className="w-2/5 h-[90vh] px-4">
                 <div className="bg-gray-200 h-full w-full rounded-md">
                     <Article />
                 </div>

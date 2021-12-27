@@ -6,7 +6,6 @@ import { getSubcategory } from "../../query/subcategory";
 import Loading from "../Loading";
 
 const SubCategory = ({ id }: { id: string }) => {
-    console.log({ id });
     const { data, loading, error } = useQuery(getSubcategory, {
         variables: {
             id,

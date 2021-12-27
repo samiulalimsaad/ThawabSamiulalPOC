@@ -14,7 +14,7 @@ export const getSubcategory = gql`
 `;
 
 export const addSubcategory = gql`
-    mutation MyQuery($subcategory_name: String!, $category_id: String!) {
+    mutation MyQuery($subcategory_name: String!, $category_id: uuid!) {
         insert_subcategory_one(
             object: {
                 subcategory_name: $subcategory_name

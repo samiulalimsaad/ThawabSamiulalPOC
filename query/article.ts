@@ -38,7 +38,7 @@ export const addArticle = gql`
     mutation MyQuery(
         $title: String!
         $content: String!
-        $subcategory_id: String!
+        $subcategory_id: uuid!
     ) {
         insert_article_one(
             object: {

@@ -18,8 +18,8 @@ const Article = () => {
                     type="image/svg+xml"
                 />
             </Head>
-            <div className="h-full flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 ">
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            <div className="h-full flex flex-col items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 ">
+                <h2 className="text-center text-3xl font-extrabold text-gray-900">
                     Create a new article
                 </h2>
                 <ArticleForm />

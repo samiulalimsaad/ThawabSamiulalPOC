@@ -1,10 +1,12 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { addArticle } from "../../query/article";
 import { getCategory } from "../../query/category";
 import { getSubcategory } from "../../query/subcategory";
 import { articleValidationSchema } from "../../validator/index";
+import AddCategory from "./AddCategory";
+import AddSubcategory from "./AddSubcategory";
 
 const initialValue = {
     title: "",
@@ -14,10 +16,23 @@ const initialValue = {
 };
 
 const ArticleForm = () => {
-    const router = useRouter();
     const [error, setError] = useState("");
+
     const { data: cat } = useQuery(getCategory);
-    const { data: subcat } = useQuery(getSubcategory);
+
+    const [categoryId, setCategoryId] = useState<string>();
+    const [addNewArticle, { data, loading, error: e }] =
+        useMutation(addArticle);
+    useEffect(() => {
+        setCategoryId(cat?.category[0]?.id);
+    }, [cat?.category]);
+
+    const { data: subcat } = useQuery(getSubcategory, {
+        variables: {
+            id: categoryId,
+        },
+    });
+
     const uploadArticle = async (
         value: typeof initialValue,
         { setSubmitting }: { setSubmitting: (arg0: boolean) => void }
@@ -25,7 +40,9 @@ const ArticleForm = () => {
         const isValid = articleValidationSchema.isValidSync(value);
         if (isValid) {
             const { title, category, subcategory, content } = value;
-            console.log({ value });
+            addNewArticle({
+                variables: { title, content, subcategory_id: subcategory },
+            });
         }
     };
     return (
@@ -35,7 +52,7 @@ const ArticleForm = () => {
             onSubmit={uploadArticle}
             className="ease-in-out duration-1000"
         >
-            {({ isSubmitting, isValid, values }) => (
+            {({ isSubmitting, isValid }) => (
                 <Form className="mt-8 space-y-6 w-full">
                     <Field type="hidden" name="remember" defaultValue="true" />
                     {error && (
@@ -68,36 +85,17 @@ const ArticleForm = () => {
                             </div>
                         </div>
                         <div>
-                            <div className="flex items-center w-full">
-                                <div className="w-9/12 mr-4">
-                                    <Field
-                                        as="select"
-                                        id="category"
-                                        name="category"
-                                        autoComplete="category"
-                                        className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    >
-                                        <option>category</option>
-                                        {cat?.category?.map(
-                                            (v: {
-                                                id: string;
-                                                category_name: string;
-                                            }) => (
-                                                <option key={v.id}>
-                                                    {v.category_name}
-                                                </option>
-                                            )
-                                        )}
-                                    </Field>
-                                </div>
-                                <div className="w-3/12">
-                                    <button
-                                        type="button"
-                                        className="p-2 flex justify-center border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 uppercase"
-                                    >
-                                        add new
-                                    </button>
-                                </div>
+                            <div className="flex justify-between w-full">
+                                <Field
+                                    as="select"
+                                    id="category"
+                                    setCategoryId={setCategoryId}
+                                    name="category"
+                                    autoComplete="category"
+                                    cat={cat}
+                                    component={AddCategory}
+                                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
                             </div>
                             <ErrorMessage name="category">
                                 {(msg) => (
@@ -107,35 +105,15 @@ const ArticleForm = () => {
                         </div>
                         <div>
                             <div className="flex items-center w-full">
-                                <div className="w-9/12 mr-4">
-                                    <Field
-                                        as="select"
-                                        id="subcategory"
-                                        name="subcategory"
-                                        autoComplete="subcategory"
-                                        className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    >
-                                        <option>subcategory</option>
-                                        {cat?.subcategory?.map(
-                                            (v: {
-                                                id: string;
-                                                subcategory_name: string;
-                                            }) => (
-                                                <option key={v.id}>
-                                                    {v.subcategory_name}
-                                                </option>
-                                            )
-                                        )}
-                                    </Field>
-                                </div>
-                                <div className="w-3/12">
-                                    <button
-                                        type="button"
-                                        className="p-2 flex justify-center border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 uppercase"
-                                    >
-                                        add new
-                                    </button>
-                                </div>
+                                <Field
+                                    as="select"
+                                    id="subcategory"
+                                    name="subcategory"
+                                    autoComplete="subcategory"
+                                    subcat={subcat}
+                                    component={AddSubcategory}
+                                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
                             </div>
                             <ErrorMessage name="subcategory">
                                 {(msg) => (
@@ -174,7 +152,7 @@ const ArticleForm = () => {
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70"
                             disabled={isSubmitting || !isValid}
                         >
-                            Sign in
+                            Add new Article
                         </button>
                     </div>
                 </Form>
