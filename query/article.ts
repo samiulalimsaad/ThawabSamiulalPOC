@@ -33,3 +33,28 @@ export const getAllArticlesFromSubcategory = gql`
         }
     }
 `;
+
+export const addArticle = gql`
+    mutation MyQuery(
+        $title: String!
+        $content: String!
+        $subcategory_id: String!
+    ) {
+        insert_article_one(
+            object: {
+                title: $title
+                content: $content
+                subcategory_id: $subcategory_id
+            }
+        ) {
+            title
+            content
+            subcategory {
+                subcategory_name
+                category {
+                    category_name
+                }
+            }
+        }
+    }
+`;

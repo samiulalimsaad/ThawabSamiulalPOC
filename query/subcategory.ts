@@ -12,3 +12,19 @@ export const getSubcategory = gql`
         }
     }
 `;
+
+export const addSubcategory = gql`
+    mutation MyQuery($subcategory_name: String!, $category_id: String!) {
+        insert_subcategory_one(
+            object: {
+                subcategory_name: $subcategory_name
+                category_id: $category_id
+            }
+        ) {
+            subcategory_name
+            category {
+                category_name
+            }
+        }
+    }
+`;

@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { getCategory } from "../../query/category";
 import { categoryInterface } from "../../util/interfaces";
+import Article from "../article";
 import Loading from "../Loading";
 import SubCategory from "./SubCategory";
 
@@ -50,7 +51,9 @@ const Category = ({ category }: categoryInterface) => {
                 </div>
             </div>
             <div className="w-2/5 h-[90vh] p-4">
-                <div className="bg-gray-200 h-full w-full rounded-md" />
+                <div className="bg-gray-200 h-full w-full rounded-md">
+                    <Article />
+                </div>
             </div>
         </div>
     );

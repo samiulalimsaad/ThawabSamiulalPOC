@@ -13,9 +13,7 @@ const Layout = ({ children }: { children: any }) => {
     }
 
     return (
-        <section className="w-screen h-screen overflow-auto bg-gray-100 pb-24">
-            {children}
-        </section>
+        <section className="w-screen h-full bg-gray-100">{children}</section>
     );
 };
 
