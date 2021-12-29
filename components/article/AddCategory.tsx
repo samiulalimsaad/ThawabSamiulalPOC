@@ -3,10 +3,20 @@ import { CheckIcon, PlusIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import { addCategory } from "../../query/category";
 
-const AddCategory = ({ field, setCategoryId, form, cat, ...props }: any) => {
+const AddCategory = ({
+    field,
+    setError,
+    setCategoryId,
+    form,
+    cat,
+    ...props
+}: any) => {
     const [state, setState] = useState(false);
     const [category_name, setCategory_name] = useState("");
     const [addCat, { data, loading, error }] = useMutation(addCategory);
+    if (error) {
+        setError({ type: true, message: error.message });
+    }
     if (state) {
         return (
             <>
@@ -30,6 +40,10 @@ const AddCategory = ({ field, setCategoryId, form, cat, ...props }: any) => {
                         category_name &&
                             addCat({ variables: { category_name } });
                         setState(false);
+                        setError({
+                            type: false,
+                            message: `category "${category_name}" is created`,
+                        });
                     }}
                     className="ml-2 p-2 flex justify-center border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 uppercase"
                 >
@@ -49,6 +63,9 @@ const AddCategory = ({ field, setCategoryId, form, cat, ...props }: any) => {
                         form.setFieldValue("category", e.target.value);
                     }}
                 >
+                    <option value="" disabled>
+                        select category
+                    </option>
                     {cat?.category?.map(
                         (v: { id: string; category_name: string }) => (
                             <option key={v.id} value={v.id}>

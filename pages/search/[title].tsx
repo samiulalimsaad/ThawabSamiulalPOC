@@ -14,9 +14,12 @@ const SearchWithTitle = () => {
     });
     if (error) {
         return (
-            <div>
-                <pre>{JSON.stringify(error, null, 4)}</pre>
-            </div>
+            <section className="h-screen w-screen grid place-items-center ">
+                <div>
+                    <p>Unauthenticated Please Login before access</p>
+                    <p>{error.message}</p>
+                </div>
+            </section>
         );
     }
     if (loading) {

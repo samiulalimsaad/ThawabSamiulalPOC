@@ -23,6 +23,17 @@ const Article = () => {
                     Create a new article
                 </h2>
                 <ArticleForm />
+                <div className="mt-10 text-sm">
+                    Github repo:
+                    <a
+                        href="https://github.com/Thawab/SamiulalPOC"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="ml-2 text-blue-600 hover:underline"
+                    >
+                        https://github.com/Thawab/SamiulalPOC
+                    </a>
+                </div>
             </div>
         </>
     );

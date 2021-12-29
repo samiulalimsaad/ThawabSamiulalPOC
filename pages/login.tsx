@@ -1,15 +1,22 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import Loading from "../components/Loading";
 
 function Login() {
+    const { isAuthenticated } = useAuth0();
     const router = useRouter();
-    useEffect(() => {
-        router.push("/api/auth/login");
-    }, [router]);
-
+    if (isAuthenticated) {
+        router.push("/");
+    }
+    if (!isAuthenticated) {
+        return (
+            <section className="h-screen w-screen grid place-items-center ">
+                Not Authenticated Please Login before access
+            </section>
+        );
+    }
     return (
-        <section className="h-screen w-screen">
+        <section className="h-screen w-screen grid place-items-center">
             <Loading />
         </section>
     );

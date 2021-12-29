@@ -16,7 +16,7 @@ const initialValue = {
 };
 
 const ArticleForm = () => {
-    const [error, setError] = useState("");
+    const [error, setError] = useState({ type: false, message: "" });
 
     const { data: cat } = useQuery(getCategory);
 
@@ -32,17 +32,23 @@ const ArticleForm = () => {
             id: categoryId,
         },
     });
-
+    if (e) {
+        setError({
+            type: true,
+            message: e.message,
+        });
+    }
     const uploadArticle = async (
         value: typeof initialValue,
         { setSubmitting }: { setSubmitting: (arg0: boolean) => void }
     ) => {
         const isValid = articleValidationSchema.isValidSync(value);
         if (isValid) {
-            const { title, category, subcategory, content } = value;
+            const { title, subcategory, content } = value;
             addNewArticle({
                 variables: { title, content, subcategory_id: subcategory },
             });
+            setSubmitting(false);
         }
     };
     return (
@@ -55,9 +61,13 @@ const ArticleForm = () => {
             {({ isSubmitting, isValid }) => (
                 <Form className="mt-8 space-y-6 w-full">
                     <Field type="hidden" name="remember" defaultValue="true" />
-                    {error && (
-                        <div className="bg-red-500/70 text-white px-5 py-2 rounded-md ">
-                            {error}
+                    {error.message && (
+                        <div
+                            className={`text-white px-5 py-2 rounded-md ${
+                                error.type ? "bg-red-500/70" : "bg-green-700/70"
+                            }`}
+                        >
+                            {error.message}
                         </div>
                     )}
                     <div className="rounded-md space-y-4 w-full">
@@ -92,6 +102,7 @@ const ArticleForm = () => {
                                     setCategoryId={setCategoryId}
                                     name="category"
                                     autoComplete="category"
+                                    setError={setError}
                                     cat={cat}
                                     component={AddCategory}
                                     className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -111,6 +122,7 @@ const ArticleForm = () => {
                                     name="subcategory"
                                     autoComplete="subcategory"
                                     subcat={subcat}
+                                    setError={setError}
                                     component={AddSubcategory}
                                     className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 />

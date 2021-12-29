@@ -3,10 +3,13 @@ import { CheckIcon, PlusIcon } from "@heroicons/react/outline";
 import { useState } from "react";
 import { addSubcategory } from "../../query/subcategory";
 
-const AddSubCategory = ({ field, form, subcat, ...props }: any) => {
+const AddSubCategory = ({ field, setError, form, subcat, ...props }: any) => {
     const [state, setState] = useState(false);
     const [subcategory_name, setSubcategory_name] = useState("");
     const [addSubCat, { data, loading, error }] = useMutation(addSubcategory);
+    if (error) {
+        setError({ type: true, message: error.message });
+    }
     if (state) {
         return (
             <>
@@ -25,7 +28,7 @@ const AddSubCategory = ({ field, form, subcat, ...props }: any) => {
                 />
                 <button
                     type="button"
-                    disabled={loading}
+                    disabled={loading || !form.values.category}
                     onClick={() => {
                         subcategory_name &&
                             addSubCat({
@@ -35,8 +38,12 @@ const AddSubCategory = ({ field, form, subcat, ...props }: any) => {
                                 },
                             });
                         setState(false);
+                        setError({
+                            type: false,
+                            message: `subcategory "${subcategory_name}" is created`,
+                        });
                     }}
-                    className="ml-2 p-2 flex justify-center border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 uppercase"
+                    className="ml-2 p-2 flex justify-center border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 uppercase disabled:bg-green-700"
                 >
                     <CheckIcon className="h-6 w-6" />
                 </button>
@@ -53,6 +60,9 @@ const AddSubCategory = ({ field, form, subcat, ...props }: any) => {
                         form.setFieldValue("subcategory", e.target.value);
                     }}
                 >
+                    <option value="" disabled>
+                        select subcategory
+                    </option>
                     {subcat?.subcategory?.map(
                         (v: { id: string; subcategory_name: string }) => (
                             <option key={v.id} value={v.id}>
